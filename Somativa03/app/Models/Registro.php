@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Registro extends Model
 {
     protected $fillable = [
-
         'matricula',
         'aluno',
         'turma',
@@ -21,11 +20,10 @@ class Registro extends Model
         'declaracao',
         'motivo',
         'observacao',
-
     ];
 
-    // relacionamento pela matrícula
-    public function alunoRelacionamento()
+    // Nome simplificado para o Filament V2 reconhecer a relação direto pela matrícula
+    public function aluno()
     {
         return $this->belongsTo(Aluno::class, 'matricula', 'matricula');
     }

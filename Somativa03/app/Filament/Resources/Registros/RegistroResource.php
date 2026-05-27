@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\Registros;
-use App\Models\Aluno;
+
 use App\Filament\Resources\Registros\Pages\CreateRegistro;
 use App\Filament\Resources\Registros\Pages\EditRegistro;
 use App\Filament\Resources\Registros\Pages\ListRegistros;
@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class RegistroResource extends Resource
 {
@@ -22,7 +23,39 @@ class RegistroResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Registrar Aluno';
+    protected static ?string $recordTitleAttribute = 'Registro';
+
+    protected static ?string $navigationLabel = 'Histórico de Registro';
+
+    // MOSTRA MENU APENAS PARA DIRETORIA
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // VISUALIZAR
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // CRIAR
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // EDITAR
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // EXCLUIR
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
 
     public static function form(Schema $schema): Schema
     {

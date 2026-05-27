@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Registros\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -14,23 +13,15 @@ class RegistroInfolist
             ->components([
                 TextEntry::make('aluno_id')
                     ->numeric(),
+                TextEntry::make('matricula'),
+                TextEntry::make('nome_aluno'),
+                TextEntry::make('turma'),
+                TextEntry::make('empresa'),
+                TextEntry::make('docente'),
                 TextEntry::make('tipo')
                     ->badge(),
-                TextEntry::make('data')
-                    ->date(),
-                TextEntry::make('horario')
-                    ->time(),
-                TextEntry::make('motivo')
-                    ->columnSpanFull(),
-                IconEntry::make('possui_declaracao')
-                    ->boolean(),
-                TextEntry::make('status')
-                    ->badge(),
-                TextEntry::make('diretor_responsavel'),
-                TextEntry::make('assinatura'),
-                TextEntry::make('observacoes')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
+                TextEntry::make('hora')
+                    ->dateTime(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

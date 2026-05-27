@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class AlunoResource extends Resource
 {
@@ -23,6 +24,39 @@ class AlunoResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Aluno';
+
+    // NOME DO MENU
+    protected static ?string $navigationLabel = 'Alunos';
+
+    // SOMENTE DIRETORIA VÊ
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // SOMENTE DIRETORIA ACESSA
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // SOMENTE DIRETORIA CRIA
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // SOMENTE DIRETORIA EDITA
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
+
+    // SOMENTE DIRETORIA EXCLUI
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->role === 'diretoria';
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Historicos\Schemas;
+namespace App\Filament\Resources\HistoricoProfessors\Schemas;
 
 use Filament\Schemas\Schema;
 
-class HistoricoInfolist
+class HistoricoProfessorInfolist
 {
     public static function configure(Schema $schema): Schema
     {

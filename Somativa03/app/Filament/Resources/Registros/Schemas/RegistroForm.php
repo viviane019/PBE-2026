@@ -3,57 +3,97 @@
 namespace App\Filament\Resources\Registros\Schemas;
 
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Textarea;
 
 class RegistroForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
+        return $schema->components([
 
-                Section::make('Registro')
-                    ->schema([
+            // 1. Seleção de Matrícula (Puxa tudo do Banco de Dados)
+            Select::make('matricula')
+                ->label('Matrícula do Aluno')
+                ->relationship('aluno', 'matricula')
+                ->searchable()
+                ->preload()
+                ->required()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state) {
+                        // Busca o Aluno no banco usando a matrícula selecionada
+                        $dadosAluno = \App\Models\Aluno::where('matricula', $state)->first();
+                        
+                        if ($dadosAluno) {
+                            // Preenche os três campos abaixo automaticamente!
+                            $set('aluno', $dadosAluno->nome); 
+                            $set('turma', $dadosAluno->turma);
+                            $set('empresa', $dadosAluno->empresa); // Puxa a empresa cadastrada no Aluno
+                        }
+                    }
+                }),
 
-                        TextInput::make('matricula')
-                            ->required(),
+            // 2. Informações do Aluno que aparecem sozinhas (Bloqueadas para edição manual)
+            TextInput::make('aluno')
+                ->label('Nome do Aluno')
+                ->disabled()
+                ->required(),
 
-                        TextInput::make('aluno'),
+            TextInput::make('turma')
+                ->label('Turma do Aluno')
+                ->disabled()
+                ->required(),
 
-                        TextInput::make('turma'),
+            TextInput::make('empresa')
+                ->label('Empresa / Jovem Aprendiz')
+                ->disabled()
+                ->placeholder('Nenhuma empresa vinculada'),
 
-                        TextInput::make('empresa'),
+            // 3. Dados que a Diretoria vai preencher na hora de registrar a ocorrência
+            Select::make('tipo')
+                ->label('Tipo de Registro')
+                ->options([
+                    'entrada' => 'Entrada (Atraso / Retorno)',
+                    'saida' => 'Saída Antecipada',
+                ])
+                ->required(),
 
-                        TextInput::make('docente'),
+            DatePicker::make('data')
+                ->label('Data')
+                ->default(now())
+                ->required(),
 
-                        TextInput::make('tipo'),
+            TimePicker::make('horario')
+                ->label('Horário')
+                ->default(now()->format('H:i'))
+                ->required(),
 
-                        DatePicker::make('data'),
+            TextInput::make('docente')
+                ->label('Professor / Docente Responsável')
+                ->placeholder('Nome do professor que liberou ou da aula')
+                ->required(),
 
-                        TimePicker::make('horario'),
+            TextInput::make('motivo')
+                ->label('Motivo do Registro')
+                ->required(),
 
-                        TextInput::make('diretoria'),
+            Textarea::make('observacao')
+                ->label('Observações Adicionais'),
 
-                        Select::make('status')
-                            ->options([
-                                'Pendente' => 'Pendente',
-                                'Aprovado' => 'Aprovado',
-                                'Negado' => 'Negado',
-                            ]),
-
-                        TextInput::make('declaracao'),
-
-                        TextInput::make('motivo'),
-
-                        Textarea::make('observacao'),
-
-                    ])
-
-            ]);
+            // Status que controla a esteira (Portaria e Docentes)
+            Select::make('status')
+                ->label('Status do Registro')
+                ->options([
+                    'pendente' => 'Aguardando Liberação na Portaria',
+                    'liberado' => 'Saída/Entrada Confirmada pela Portaria',
+                    'recusado' => 'Recusado/Cancelado',
+                ])
+                ->default('pendente')
+                ->required(),
+        ]);
     }
 }

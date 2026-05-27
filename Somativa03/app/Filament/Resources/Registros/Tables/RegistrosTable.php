@@ -2,13 +2,10 @@
 
 namespace App\Filament\Resources\Registros\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn; // Caso precise alterar status direto
+use Filament\Tables\Actions\Action; // 👈 Importação correta e oficial do Filament V3
 
 class RegistrosTable
 {
@@ -16,45 +13,35 @@ class RegistrosTable
     {
         return $table
             ->columns([
-                TextColumn::make('aluno_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('tipo')
-                    ->badge(),
-                TextColumn::make('data')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('horario')
-                    ->time()
-                    ->sortable(),
-                IconColumn::make('possui_declaracao')
-                    ->boolean(),
+                TextColumn::make('matricula')->label('Matrícula')->searchable(),
+                TextColumn::make('aluno')->label('Aluno')->searchable(),
+                TextColumn::make('turma')->label('Turma')->searchable(),
+                TextColumn::make('empresa')->label('Empresa'),
+                TextColumn::make('tipo')->label('Tipo')->formatStateUsing(fn ($state) => ucfirst($state)),
+                TextColumn::make('horario')->label('Horário'),
+                TextColumn::make('docente')->label('Professor'),
+                
+                // No Filament V3, TextColumn substitui o BadgeColumn usando o método ->badge()
                 TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('diretor_responsavel')
-                    ->searchable(),
-                TextColumn::make('assinatura')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pendente' => 'warning',
+                        'liberado' => 'success',
+                        'recusado' => 'danger',
+                        default => 'secondary',
+                    }),
             ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+            ->actions([
+                // Botão de confirmação usando a Action nativa do Filament V3
+                Action::make('confirmarAcesso')
+                    ->label('Confirmar Passagem')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->status === 'pendente')
+                    ->action(function ($record) {
+                        $record->update(['status' => 'liberado']);
+                    }),
             ]);
     }
 }

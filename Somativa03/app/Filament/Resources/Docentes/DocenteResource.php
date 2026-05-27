@@ -24,6 +24,9 @@ class DocenteResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Docente';
 
+    // ISSO AQUI VAI ESCONDER A ABA "DOCENTES" DO MENU LATERAL ESQUERDO:
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return DocenteForm::configure($schema);

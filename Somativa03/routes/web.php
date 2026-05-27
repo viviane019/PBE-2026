@@ -5,7 +5,7 @@ use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\DocenteController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin/login');
 });
 
 // REGISTROS
