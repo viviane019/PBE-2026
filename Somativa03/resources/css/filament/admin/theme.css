@@ -1,0 +1,104 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+/* Sidebar */
+.fi-sidebar {
+    background-color: #1a1a2e !important;
+    border-right: 1px solid #c8102e22 !important;
+}
+
+.fi-sidebar-nav-groups {
+    background-color: #1a1a2e !important;
+}
+
+.fi-sidebar-item-button {
+    color: #cbd5e1 !important;
+    border-radius: 8px !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background-color: #c8102e22 !important;
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-button.fi-active {
+    background-color: #c8102e !important;
+    color: #ffffff !important;
+}
+
+/* Topbar */
+.fi-topbar {
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #c8102e !important;
+    box-shadow: 0 2px 8px rgba(200,16,46,0.08) !important;
+}
+
+/* Fundo principal */
+.fi-main {
+    background-color: #f4f6f9 !important;
+}
+
+/* Cards */
+.fi-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+/* Botões primários */
+.fi-btn-primary {
+    background-color: #c8102e !important;
+    border-color: #c8102e !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+}
+
+.fi-btn-primary:hover {
+    background-color: #a30d25 !important;
+    border-color: #a30d25 !important;
+}
+
+/* Tabelas */
+.fi-ta-header-cell {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.05em !important;
+}
+
+.fi-ta-row:hover td {
+    background-color: #fff5f6 !important;
+}
+
+/* Login */
+.fi-simple-main {
+    background: linear-gradient(135deg, #1a1a2e 0%, #c8102e 100%) !important;
+}
+
+.fi-simple-card {
+    background-color: #ffffff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+    border: none !important;
+    padding: 2rem !important;
+}
+
+.fi-logo {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #c8102e !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Inputs */
+.fi-input {
+    border-radius: 8px !important;
+    border-color: #e2e8f0 !important;
+}
+
+.fi-input:focus {
+    border-color: #c8102e !important;
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.15) !important;
+}

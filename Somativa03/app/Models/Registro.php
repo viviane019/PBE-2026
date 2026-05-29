@@ -7,22 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Registro extends Model
 {
     protected $fillable = [
+        'nome_aluno',
         'matricula',
-        'aluno',
         'turma',
         'empresa',
-        'docente',
         'tipo',
         'data',
-        'horario',
-        'diretoria',
-        'status',
-        'declaracao',
-        'motivo',
-        'observacao',
+        'hora',
+        'docente',
+        'nome_diretora',
     ];
 
-    // Nome simplificado para o Filament V2 reconhecer a relação direto pela matrícula
     public function aluno()
     {
         return $this->belongsTo(Aluno::class, 'matricula', 'matricula');

@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('registros', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aluno_id')->constrained('alunos')->onDelete('cascade');
             $table->string('matricula');
             $table->string('nome_aluno');
             $table->string('turma');

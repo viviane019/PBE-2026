@@ -1,44 +1,32 @@
 <?php
 
-namespace App\Filament\Resources\HistoricoProfessors;
+namespace App\Filament\Resources\Professores;
 
-use App\Filament\Resources\HistoricoProfessors\Pages;
 use App\Models\Registro;
+use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 
-class HistoricoProfessorResource extends Resource
+class ProfessorResource extends Resource
 {
     protected static ?string $model = Registro::class;
 
-    protected static ?string $navigationLabel = 'Histórico da Turma';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationLabel = 'Professor';
 
-    // Garante que o link do menu só apareça para professores
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->role === 'professor';
+        return Auth::user()?->role === 'professor' || Auth::user()?->role === 'docente';
     }
 
-    // Filtra a tabela para que o professor só veja registros e tenha acesso seguro
-    public static function getEloquentQuery(): Builder
+    public static function canViewAny(): bool
     {
-        // Se não for professor, bloqueia trazendo nenhum resultado
-        if (Auth::user()?->role !== 'professor') {
-            return parent::getEloquentQuery()->whereRaw('1 = 0');
-        }
-
-        return parent::getEloquentQuery();
-        
-        /* DICA DE OURO: Se o seu modelo Registro tiver um relacionamento com o professor, 
-        você pode filtrar para ele ver APENAS os alunos dele, assim:
-        
-        return parent::getEloquentQuery()->where('professor_id', Auth::id());
-        */
+        return Auth::user()?->role === 'professor' || Auth::user()?->role === 'docente';
     }
 
     public static function table(Table $table): Table
@@ -47,37 +35,49 @@ class HistoricoProfessorResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nome_aluno')
                     ->label('Aluno')
-                    ->searchable(), // Adicionado para facilitar a busca
-
-                Tables\Columns\TextColumn::make('matricula')
-                    ->label('Matrícula')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('turma')
                     ->label('Turma'),
 
+                Tables\Columns\TextColumn::make('empresa')
+                    ->label('Empresa'),
+
                 Tables\Columns\TextColumn::make('tipo')
-                    ->label('Registro'),
+                    ->label('Tipo')
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
 
                 Tables\Columns\TextColumn::make('hora')
-                    ->label('Horário')
-                    ->dateTime('d/m/Y H:i'), // Formata a data/hora para o padrão BR caso seja datetime
+                    ->label('Horário'),
+
+                Tables\Columns\TextColumn::make('docente')
+                    ->label('Professor'),
 
                 Tables\Columns\TextColumn::make('confirmado')
                     ->label('Status')
-                    ->badge() // Transforma em um modal visual mais bonito (Badge)
-                    ->color(fn ($state): string => $state ? 'success' : 'warning')
-                    ->formatStateUsing(fn ($state) => $state ? 'Visualizado' : 'Pendente'),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Liberado' : 'Pendente')
+                    ->color(fn ($state) => $state ? 'success' : 'warning'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Action::make('aprovar')
+                    ->label('Aprovar')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(fn ($record) => $record->update(['confirmado' => 1])),
+
+                Action::make('recusar')
+                    ->label('Recusar')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->action(fn ($record) => $record->delete()),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListHistoricoProfessors::route('/'),
+            'index' => \App\Filament\Resources\Professores\Pages\ListProfessores::route('/'),
         ];
     }
 }
